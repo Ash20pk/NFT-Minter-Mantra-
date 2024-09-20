@@ -32,6 +32,7 @@ export default function App() {
   const [config, setConfig] = useState(null);
 
   const connectWallet = async () => {
+    setLoading(true);
     if (!checkKeplrInstalled()) {
       const installUrl = getKeplrInstallUrl();
       if (window.confirm("Keplr wallet is not installed. Would you like to install it now?")) {
@@ -40,7 +41,9 @@ export default function App() {
     } else {
       try {
         connect({ chainId: "mantra-hongbai-1" });
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Failed to connect:", error);
         showToast("Failed to connect. Please make sure Keplr is set up correctly.", "error");
       }
