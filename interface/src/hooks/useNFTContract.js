@@ -37,11 +37,13 @@ export function useNftContract() {
     if (!cosmWasmClient) return null;
     setLoading(true);
     const nftdetails = await cosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, { nft_details: {} });
+    const totalminted = await cosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, { num_tokens: {} });
     const data = nftdetails.token_uri;
     const response = await fetch(data);
     const metadata = await response.json();
-    const nft = {name: metadata.name, description:metadata.description, image: `https://gateway.pinata.cloud/ipfs/${metadata.image.slice(7)}`, mint_price: ((nftdetails.mint_price.amount)/1000000), max_mint: nftdetails.max_mints}
+    const nft = {name: metadata.name, description:metadata.description, image: `https://gateway.pinata.cloud/ipfs/${metadata.image.slice(7)}`, mint_price: ((nftdetails.mint_price.amount)/1000000), max_mint: nftdetails.max_mints, total_minted: totalminted.count}
     setLoading(false);
+    console.log(nft);
     return nft;
   }, [cosmWasmClient]);
 
