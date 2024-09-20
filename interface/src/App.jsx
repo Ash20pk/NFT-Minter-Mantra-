@@ -46,18 +46,22 @@ export default function App() {
       }
     }
   };
+  const fetchNFT = () => {
+    queryConfig().then(setConfig).catch(error => {
+      console.error("Failed to fetch config:", error);
+      showToast("Error fetching config. Please try again later.", "error");
+    });
+  };
 
   useEffect(() => {
     if (isConnected) {
-      queryConfig().then(setConfig).catch(error => {
-        console.error("Failed to fetch config:", error);
-        showToast("Error fetching config. Please try again later.", "error");
-      });
+      fetchNFT();
     }
-  }, [isConnected, queryConfig, toast]);
+  }, [isConnected, toast]);
 
   const handleMint = useCallback(() => {
-    mintNft().then(() => {
+    mintNft().then(async() => {
+      await fetchNFT()
       showToast("NFT minted successfully!", "success");
     }).catch(error => {
       console.error("Failed to mint NFT:", error);

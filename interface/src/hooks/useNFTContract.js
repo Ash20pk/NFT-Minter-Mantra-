@@ -33,7 +33,7 @@ export function useNftContract() {
     return result;
   }, [account, getSigningClient]);
 
-  const queryConfig = useCallback(async () => {
+  const queryConfig = useCallback(async (caller = "default") => {
     if (!cosmWasmClient) return null;
     setLoading(true);
     const nftdetails = await cosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, { nft_details: {} });
@@ -42,7 +42,9 @@ export function useNftContract() {
     const response = await fetch(data);
     const metadata = await response.json();
     const nft = {name: metadata.name, description:metadata.description, image: `https://gateway.pinata.cloud/ipfs/${metadata.image.slice(7)}`, mint_price: ((nftdetails.mint_price.amount)/1000000), max_mint: nftdetails.max_mints, total_minted: totalminted.count}
-    setLoading(false);
+    if(caller != "mintNFT"){
+      setLoading(false);
+    }
     console.log(nft);
     return nft;
   }, [cosmWasmClient]);
@@ -51,7 +53,7 @@ export function useNftContract() {
     if (!account) return;
     setLoading(true);
     const signingClient = await getSigningClient();
-    const nftDetails = await queryConfig();
+    const nftDetails = await queryConfig("mintNFT");
     if (!nftDetails) {
       setLoading(false);
       throw new Error("Failed to fetch NFT details");
@@ -65,7 +67,6 @@ export function useNftContract() {
       "",
       coins(mintPrice * 1000000, "uom")  
     );
-    setLoading(false);
   }, [account, getSigningClient, queryConfig]);
 
   return { instantiateContract, queryConfig, mintNft, loading, setLoading };
