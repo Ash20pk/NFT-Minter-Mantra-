@@ -124,7 +124,7 @@ export default function App() {
               <HStack>
                 <Badge colorScheme="blue">Max Mints: {config.max_mint}</Badge>
                 <Badge colorScheme="green">Mint Price: {config.mint_price} OM</Badge>
-                <Badge colorScheme="red">Total Price: {config.total_minted}/{config.max_mint}</Badge>
+                <Badge colorScheme="red">Total Minted: {config.total_minted}/{config.max_mint}</Badge>
               </HStack>
                 <Button
                   onClick={handleMint}
